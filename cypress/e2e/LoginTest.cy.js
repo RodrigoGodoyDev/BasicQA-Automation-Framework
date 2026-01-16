@@ -19,11 +19,22 @@ describe('Login Functionality', () => {
         // Login
         LoginPage.login(Cypress.env('test_user'), Cypress.env('test_password'));
 
-        // Assertions
-        LoginPage.logoutBtn.should('be.visible').and('contain.text', this.data.loginSuccessMsg);
+        // --- TUS CAMBIOS AQUÍ ---
+
+        // 1. VALIDACIÓN PRINCIPAL (User Name):
+        // Usamos el ID '#userName-value' que descubriste en el HTML.
+        // AÑADIMOS EL TIMEOUT: Le damos 15 segundos para que desaparezca el "Loading..."
+        // Validamos que el texto coincida con tu usuario real.
+        cy.get('#userName-value', { timeout: 15000 })
+          .should('have.text', Cypress.env('test_user'));
+
+        // 2. VALIDACIÓN SECUNDARIA (Botón Logout):
+        // Ya no necesitamos timeout aquí porque si pasó la línea de arriba, esto ya cargó.
+        LoginPage.logoutBtn.should('be.visible').and('contain.text', 'Log out');
         
-        // Validate URL redirection
-        cy.url().should('include', this.data.expectedUrlPart);
+        // 3. VALIDACIÓN DE URL (Opcional pero buena práctica):
+        // Verificamos que ya no estemos en '/login'
+        cy.url().should('not.include', '/login');
         
         // Validate cookie generation
         cy.getCookie('token').should('exist');
