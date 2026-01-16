@@ -1,10 +1,10 @@
-name: Cypress E2E Tests
+name: Master Automation Suite
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, master ]
 
 jobs:
   cypress-run:
@@ -13,11 +13,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Run Cypress Tests
+      - name: Run All Cypress Tests
         uses: cypress-io/github-action@v6
         with:
           browser: chrome
+        # ⚠️ CRUCIAL: Inyectamos las credenciales para los tests de Login
         env:
-
           CYPRESS_test_user: ${{ secrets.TEST_USER }}
           CYPRESS_test_password: ${{ secrets.TEST_PASSWORD }}
+
+      # Generar y subir el reporte unificado
+      - name: Upload Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-report
+          path: cypress/reports
+          retention-days: 30
