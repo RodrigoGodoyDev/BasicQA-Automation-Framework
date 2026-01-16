@@ -1,0 +1,23 @@
+name: Cypress E2E Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Cypress Tests
+        uses: cypress-io/github-action@v6
+        with:
+          browser: chrome
+        env:
+
+          CYPRESS_test_user: ${{ secrets.TEST_USER }}
+          CYPRESS_test_password: ${{ secrets.TEST_PASSWORD }}
